@@ -58,6 +58,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
         Route::resource('subscriptions', Admin\SubscriptionController::class);
         Route::post('subscriptions/generate', [Admin\SubscriptionController::class, 'generate'])->name('subscriptions.generate');
         Route::post('subscriptions/{subscription}/restore', [Admin\SubscriptionController::class, 'restore'])->name('subscriptions.restore')->withTrashed();
+
+        Route::resource('enrollments', Admin\EnrollmentController::class)->only(['store', 'destroy']);
     });
 
     Route::prefix('attendance')->name('attendance.')->group(function () {
@@ -86,9 +88,11 @@ Route::prefix('secretary')->name('secretary.')->middleware(['auth', 'role:secret
     // Academic
     Route::prefix('academic')->name('academic.')->group(function () {
         Route::resource('students',      Secretary\StudentController::class);
+        Route::post('students/{student}/restore', [Secretary\StudentController::class, 'restore'])->name('students.restore')->withTrashed();
         Route::resource('groups',        Secretary\GroupController::class);
         Route::resource('users',         Secretary\UserController::class);
         Route::resource('subscriptions', Secretary\SubscriptionController::class);
+        Route::resource('enrollments',   Secretary\EnrollmentController::class)->only(['store', 'destroy']);
     });
 
     // Attendance

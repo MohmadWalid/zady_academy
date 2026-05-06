@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Subscription;
+use App\Models\Group;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -36,6 +37,32 @@ class SubscriptionController extends Controller
         $subscriptions = $query->latest('month')->paginate(20);
 
         return view('admin.academic.subscriptions.index', compact('subscriptions'));
+    }
+
+    /**
+     * Show edit form.
+     */
+    public function edit(Subscription $subscription)
+    {
+        $groups = Group::all();
+        return view('admin.academic.subscriptions.edit', compact('subscription', 'groups'));
+    }
+
+    /**
+     * Update subscription (correction logic per PRD §4.5).
+     */
+    public function update(Request $request, Subscription $subscription)
+    {
+        $data = $request->validate([
+            'month' => 'required|regex:/^\d{4}-\d{2}$/',
+            'group_id' => 'required|exists:groups,id',
+            'status' => 'required|in:unpaid,pending,paid',
+        ]);
+
+        $subscription->update($data);
+
+        return redirect()->route('admin.academic.subscriptions.index')
+            ->with('success', 'تم تحديث بيانات الاشتراك بنجاح.');
     }
 
     /**
