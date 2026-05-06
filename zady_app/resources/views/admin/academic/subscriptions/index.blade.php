@@ -58,11 +58,14 @@
                         <td class="px-6 py-4 font-bold text-primary">{{ number_format($sub->group->monthly_price) }} جنيه</td>
                         <td class="px-6 py-4"><x-status-badge :status="$sub->status" /></td>
                         <td class="px-6 py-4 text-left">
-                            <form action="{{ route('admin.academic.subscriptions.destroy', $sub) }}" method="POST" onsubmit="return confirm('هل أنت متأكد؟')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-danger hover:underline text-xs font-bold">حذف</button>
-                            </form>
+                            <div class="flex justify-end items-center gap-2">
+                                <a href="{{ route('admin.academic.subscriptions.edit', $sub) }}" class="text-primary hover:underline text-xs font-bold">تعديل</a>
+                                <form action="{{ route('admin.academic.subscriptions.destroy', $sub) }}" method="POST" onsubmit="return confirm('هل أنت متأكد؟')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-danger hover:underline text-xs font-bold">حذف</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty
