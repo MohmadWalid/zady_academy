@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quran Academy — ERD</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 32px 24px 64px;
+    }
+
+    header { text-align: center; margin-bottom: 40px; }
+    header h1 { font-size: 1.75rem; font-weight: 700; color: #f8fafc; letter-spacing: -0.02em; }
+    header p  { margin-top: 6px; font-size: 0.875rem; color: #94a3b8; }
+
+    .badge-row { display: flex; justify-content: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .badge { padding: 3px 12px; border-radius: 999px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+    .badge-blue  { background: #1e3a5f; color: #60a5fa;  border: 1px solid #2563eb44; }
+    .badge-green { background: #14301f; color: #4ade80;  border: 1px solid #16a34a44; }
+    .badge-amber { background: #312007; color: #fbbf24;  border: 1px solid #d9770644; }
+
+    .diagram-wrapper { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 16px; padding: 32px; overflow-x: auto; margin-bottom: 48px; }
+    .diagram-wrapper .mermaid { display: flex; justify-content: center; }
+
+    .legend-section { max-width: 1060px; margin: 0 auto; }
+    .legend-section h2 { font-size: 1rem; font-weight: 600; color: #cbd5e1; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid #2d3748; }
+
+    .entity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+
+    .entity-card { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 10px; overflow: hidden; }
+    .entity-card-header { padding: 10px 14px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+    .entity-card-body   { padding: 0 14px 12px; }
+
+    .section-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #475569; padding: 8px 0 3px; font-weight: 700; }
+
+    .field-row { display: flex; align-items: baseline; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #1e2536; font-size: 0.78rem; gap: 8px; }
+    .field-row:last-child { border-bottom: none; }
+
+    .field-name       { color: #e2e8f0; font-family: 'Courier New', monospace; flex-shrink: 0; }
+    .field-name.pk    { color: #fbbf24; font-weight: 700; }
+    .field-name.fk    { color: #60a5fa; }
+    .field-name.audit { color: #94a3b8; }
+    .field-type       { color: #64748b; font-size: 0.7rem; text-align: right; }
+
+    .tag      { font-size: 0.6rem; padding: 1px 5px; border-radius: 3px; font-weight: 700; margin-left: 4px; }
+    .tag-pk   { background: #3b2a00; color: #fbbf24; }
+    .tag-fk   { background: #0f2942; color: #60a5fa; }
+    .tag-enum { background: #1a0b33; color: #a78bfa; }
+
+    .accent-indigo  .entity-card-header { background: #1e1b4b; color: #a5b4fc; border-bottom: 1px solid #312e81; }
+    .accent-emerald .entity-card-header { background: #052e16; color: #6ee7b7; border-bottom: 1px solid #065f46; }
+    .accent-violet  .entity-card-header { background: #1e1040; color: #c4b5fd; border-bottom: 1px solid #4c1d95; }
+    .accent-cyan    .entity-card-header { background: #042830; color: #67e8f9; border-bottom: 1px solid #0e7490; }
+    .accent-teal    .entity-card-header { background: #042f2e; color: #5eead4; border-bottom: 1px solid #0f766e; }
+    .accent-rose    .entity-card-header { background: #3b0a14; color: #fda4af; border-bottom: 1px solid #9f1239; }
+    .accent-amber   .entity-card-header { background: #2c1a00; color: #fcd34d; border-bottom: 1px solid #92400e; }
+    .accent-orange  .entity-card-header { background: #2c1600; color: #fdba74; border-bottom: 1px solid #7c2d12; }
+
+    .tier-box { max-width: 1060px; margin: 0 auto 36px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .tier-card { flex: 1; min-width: 220px; background: #1a1f2e; border: 1px solid #2d3748; border-radius: 10px; padding: 14px 16px; }
+    .tier-card h3 { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+    .tier-card.t-full h3 { color: #6ee7b7; }
+    .tier-card.t-part h3 { color: #67e8f9; }
+    .tier-card.t-ts   h3 { color: #94a3b8; }
+    .tier-card p { font-size: 0.75rem; color: #64748b; line-height: 1.5; }
+    .tier-card code { font-size: 0.7rem; color: #cbd5e1; background: #0f1117; padding: 1px 5px; border-radius: 3px; }
+
+    .rel-section    { margin-top: 40px; }
+    .rel-section h2 { font-size: 1rem; font-weight: 600; color: #cbd5e1; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid #2d3748; }
+
+    table            { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    th               { background: #1a1f2e; color: #94a3b8; font-weight: 600; padding: 10px 14px; text-align: left; border-bottom: 1px solid #2d3748; }
+    td               { padding: 9px 14px; border-bottom: 1px solid #1e2536; color: #cbd5e1; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td      { background: #1e2536; }
+
+    .rel-from { color: #fcd34d; font-family: monospace; }
+    .rel-to   { color: #6ee7b7; font-family: monospace; }
+    .rel-type { color: #a5b4fc; }
+
+    footer { text-align: center; margin-top: 48px; font-size: 0.78rem; color: #64748b; }
+    footer strong { color: #94a3b8; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Quran Academy — Entity Relationship Diagram</h1>
+  <p>Database schema · MVP · Laravel · MySQL · <em>access_code auth — no passwords</em></p>
+  <div class="badge-row">
+    <span class="badge badge-blue">Laravel · MySQL</span>
+    <span class="badge badge-green">8 Entities</span>
+    <span class="badge badge-amber">MVP Scope</span>
+  </div>
+</header>
+
+<!-- ── Mermaid Diagram ── -->
+<div class="diagram-wrapper">
+  <div class="mermaid">
+erDiagram
+    users {
+        int id PK
+        string name
+        string phone
+        string access_code
+        enum role
+        int created_by FK
+        timestamp created_at
+        int updated_by FK
+        timestamp updated_at
+        timestamp deleted_at
+        int deleted_by FK
+    }
+    students {
+        int id PK
+        string name
+        int parent_id FK
+        int age
+        string phone
+        int created_by FK
+        timestamp created_at
+        int updated_by FK
+        timestamp updated_at
+        timestamp deleted_at
+        int deleted_by FK
+    }
+    groups {
+        int id PK
+        string name
+        enum type
+        decimal monthly_price
+        int teacher_id FK
+        int created_by FK
+        timestamp created_at
+        int updated_by FK
+        timestamp updated_at
+        timestamp deleted_at
+        int deleted_by FK
+    }
+    group_sessions {
+        int id PK
+        int group_id FK
+        string day
+        time time
+        timestamp created_at
+        timestamp updated_at
+    }
+    enrollments {
+        int id PK
+        int student_id FK
+        int group_id FK
+        boolean active
+        int created_by FK
+        timestamp created_at
+        int updated_by FK
+        timestamp updated_at
+        timestamp deleted_at
+        int deleted_by FK
+    }
+    subscriptions {
+        int id PK
+        int student_id FK
+        int group_id FK
+        string month
+        enum status
+        int created_by FK
+        timestamp created_at
+        int updated_by FK
+        timestamp updated_at
+        timestamp deleted_at
+        int deleted_by FK
+    }
+    payments {
+        int id PK
+        string payment_code
+        int subscription_id FK
+        decimal amount
+        enum method
+        enum status
+        string proof_image
+        int created_by FK
+        timestamp created_at
+        int updated_by FK
+        timestamp updated_at
+        timestamp deleted_at
+        int deleted_by FK
+    }
+    attendance {
+        int id PK
+        int student_id FK
+        int group_id FK
+        date date
+        boolean present
+        int taken_by FK
+        int created_by FK
+        timestamp created_at
+        int updated_by FK
+        timestamp updated_at
+    }
+
+    users         ||--o{  students       : "parent of"
+    users         ||--o{  groups         : "teacher_id"
+    groups        ||--o{  group_sessions : "has sessions"
+    students      ||--o{  enrollments    : "enrolls in"
+    groups        ||--o{  enrollments    : "has enrollments"
+    students      ||--o{  subscriptions  : "billed monthly"
+    groups        ||--o{  subscriptions  : "billed monthly"
+    subscriptions ||--o{  payments       : "paid via"
+    users         ||--o{  payments       : "created_by"
+    students      ||--o{  attendance     : "recorded for"
+    groups        ||--o{  attendance     : "session in"
+    users         ||--o{  attendance     : "taken_by"
+  </div>
+</div>
+
+
+<!-- ── Entity Cards ── -->
+<div class="legend-section">
+  <h2>Entity Reference</h2>
+  <div class="entity-grid">
+
+    <!-- users -->
+    <div class="entity-card accent-indigo">
+      <div class="entity-card-header">👤 users</div>
+      <div class="entity-card-body">
+        <div class="section-label">Fields</div>
+        <div class="field-row"><span class="field-name pk">id <span class="tag tag-pk">PK</span></span><span class="field-type">int, auto-increment</span></div>
+        <div class="field-row"><span class="field-name">name</span><span class="field-type">varchar(255)</span></div>
+        <div class="field-row"><span class="field-name">phone</span><span class="field-type">varchar(20)</span></div>
+        <div class="field-row"><span class="field-name">access_code</span><span class="field-type">varchar(10), unique — ZADY-XXXX, plain text</span></div>
+        <div class="field-row"><span class="field-name">role <span class="tag tag-enum">ENUM</span></span><span class="field-type">admin | secretary | teacher | parent</span></div>
+        <div class="section-label">Audit</div>
+        <div class="field-row"><span class="field-name audit fk">created_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">created_at</span><span class="field-type">timestamp</span></div>
+        <div class="field-row"><span class="field-name audit fk">updated_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">updated_at</span><span class="field-type">timestamp, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">deleted_at</span><span class="field-type">timestamp, nullable</span></div>
+        <div class="field-row"><span class="field-name audit fk">deleted_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+      </div>
+    </div>
+
+    <!-- students -->
+    <div class="entity-card accent-emerald">
+      <div class="entity-card-header">🎓 students</div>
+      <div class="entity-card-body">
+        <div class="section-label">Fields</div>
+        <div class="field-row"><span class="field-name pk">id <span class="tag tag-pk">PK</span></span><span class="field-type">int, auto-increment</span></div>
+        <div class="field-row"><span class="field-name">name</span><span class="field-type">varchar(255)</span></div>
+        <div class="field-row"><span class="field-name fk">parent_id <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id</span></div>
+        <div class="field-row"><span class="field-name">age</span><span class="field-type">tinyint unsigned</span></div>
+        <div class="field-row"><span class="field-name">phone</span><span class="field-type">varchar(20), nullable</span></div>
+        <div class="section-label">Audit</div>
+        <div class="field-row"><span class="field-name audit fk">created_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">created_at</span><span class="field-type">timestamp</span></div>
+        <div class="field-row"><span class="field-name audit fk">updated_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">updated_at</span><span class="field-type">timestamp, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">deleted_at</span><span class="field-type">timestamp, nullable</span></div>
+        <div class="field-row"><span class="field-name audit fk">deleted_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+      </div>
+    </div>
+
+    <!-- groups -->
+    <div class="entity-card accent-violet">
+      <div class="entity-card-header">📚 groups</div>
+      <div class="entity-card-body">
+        <div class="section-label">Fields</div>
+        <div class="field-row"><span class="field-name pk">id <span class="tag tag-pk">PK</span></span><span class="field-type">int, auto-increment</span></div>
+        <div class="field-row"><span class="field-name">name</span><span class="field-type">varchar(255)</span></div>
+        <div class="field-row"><span class="field-name">type <span class="tag tag-enum">ENUM</span></span><span class="field-type">general | private | course</span></div>
+        <div class="field-row"><span class="field-name">monthly_price</span><span class="field-type">decimal(8,2)</span></div>
+        <div class="field-row"><span class="field-name fk">teacher_id <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id</span></div>
+        <div class="section-label">Audit</div>
+        <div class="field-row"><span class="field-name audit fk">created_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">created_at</span><span class="field-type">timestamp</span></div>
+        <div class="field-row"><span class="field-name audit fk">updated_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">updated_at</span><span class="field-type">timestamp, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">deleted_at</span><span class="field-type">timestamp, nullable</span></div>
+        <div class="field-row"><span class="field-name audit fk">deleted_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+      </div>
+    </div>
+
+    <!-- group_sessions -->
+    <div class="entity-card accent-cyan">
+      <div class="entity-card-header">🗓️ group_sessions</div>
+      <div class="entity-card-body">
+        <div class="section-label">Fields</div>
+        <div class="field-row"><span class="field-name pk">id <span class="tag tag-pk">PK</span></span><span class="field-type">int, auto-increment</span></div>
+        <div class="field-row"><span class="field-name fk">group_id <span class="tag tag-fk">FK</span></span><span class="field-type">→ groups.id</span></div>
+        <div class="field-row"><span class="field-name">day</span><span class="field-type">varchar(20)</span></div>
+        <div class="field-row"><span class="field-name">time</span><span class="field-type">time — HH:MM</span></div>
+        <div class="section-label">Audit</div>
+        <div class="field-row"><span class="field-name audit">created_at</span><span class="field-type">timestamp</span></div>
+        <div class="field-row"><span class="field-name audit">updated_at</span><span class="field-type">timestamp, nullable</span></div>
+      </div>
+    </div>
+
+    <!-- enrollments -->
+    <div class="entity-card accent-teal">
+      <div class="entity-card-header">🔗 enrollments</div>
+      <div class="entity-card-body">
+        <div class="section-label">Fields</div>
+        <div class="field-row"><span class="field-name pk">id <span class="tag tag-pk">PK</span></span><span class="field-type">int, auto-increment</span></div>
+        <div class="field-row"><span class="field-name fk">student_id <span class="tag tag-fk">FK</span></span><span class="field-type">→ students.id</span></div>
+        <div class="field-row"><span class="field-name fk">group_id <span class="tag tag-fk">FK</span></span><span class="field-type">→ groups.id</span></div>
+        <div class="field-row"><span class="field-name">active</span><span class="field-type">boolean</span></div>
+        <div class="section-label">Audit</div>
+        <div class="field-row"><span class="field-name audit fk">created_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">created_at</span><span class="field-type">timestamp</span></div>
+        <div class="field-row"><span class="field-name audit fk">updated_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">updated_at</span><span class="field-type">timestamp, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">deleted_at</span><span class="field-type">timestamp, nullable</span></div>
+        <div class="field-row"><span class="field-name audit fk">deleted_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+      </div>
+    </div>
+
+    <!-- subscriptions -->
+    <div class="entity-card accent-amber">
+      <div class="entity-card-header">📅 subscriptions</div>
+      <div class="entity-card-body">
+        <div class="section-label">Fields</div>
+        <div class="field-row"><span class="field-name pk">id <span class="tag tag-pk">PK</span></span><span class="field-type">int, auto-increment</span></div>
+        <div class="field-row"><span class="field-name fk">student_id <span class="tag tag-fk">FK</span></span><span class="field-type">→ students.id</span></div>
+        <div class="field-row"><span class="field-name fk">group_id <span class="tag tag-fk">FK</span></span><span class="field-type">→ groups.id</span></div>
+        <div class="field-row"><span class="field-name">month</span><span class="field-type">varchar(7) — YYYY-MM</span></div>
+        <div class="field-row"><span class="field-name">status <span class="tag tag-enum">ENUM</span></span><span class="field-type">unpaid | pending | paid</span></div>
+        <div class="section-label">Audit</div>
+        <div class="field-row"><span class="field-name audit fk">created_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">created_at</span><span class="field-type">timestamp</span></div>
+        <div class="field-row"><span class="field-name audit fk">updated_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">updated_at</span><span class="field-type">timestamp, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">deleted_at</span><span class="field-type">timestamp, nullable</span></div>
+        <div class="field-row"><span class="field-name audit fk">deleted_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+      </div>
+    </div>
+
+    <!-- payments -->
+    <div class="entity-card accent-rose">
+      <div class="entity-card-header">💳 payments</div>
+      <div class="entity-card-body">
+        <div class="section-label">Fields</div>
+        <div class="field-row"><span class="field-name pk">id <span class="tag tag-pk">PK</span></span><span class="field-type">int, auto-increment</span></div>
+        <div class="field-row"><span class="field-name">payment_code</span><span class="field-type">varchar — unique</span></div>
+        <div class="field-row"><span class="field-name fk">subscription_id <span class="tag tag-fk">FK</span></span><span class="field-type">→ subscriptions.id</span></div>
+        <div class="field-row"><span class="field-name">amount</span><span class="field-type">decimal(8,2)</span></div>
+        <div class="field-row"><span class="field-name">method <span class="tag tag-enum">ENUM</span></span><span class="field-type">cash | transfer</span></div>
+        <div class="field-row"><span class="field-name">status <span class="tag tag-enum">ENUM</span></span><span class="field-type">pending | approved | rejected | refunded</span></div>
+        <div class="field-row"><span class="field-name">proof_image</span><span class="field-type">varchar, nullable</span></div>
+        <div class="section-label">Audit</div>
+        <div class="field-row"><span class="field-name audit fk">created_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">created_at</span><span class="field-type">timestamp</span></div>
+        <div class="field-row"><span class="field-name audit fk">updated_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">updated_at</span><span class="field-type">timestamp, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">deleted_at</span><span class="field-type">timestamp, nullable</span></div>
+        <div class="field-row"><span class="field-name audit fk">deleted_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+      </div>
+    </div>
+
+    <!-- attendance -->
+    <div class="entity-card accent-orange">
+      <div class="entity-card-header">✅ attendance</div>
+      <div class="entity-card-body">
+        <div class="section-label">Fields</div>
+        <div class="field-row"><span class="field-name pk">id <span class="tag tag-pk">PK</span></span><span class="field-type">int, auto-increment</span></div>
+        <div class="field-row"><span class="field-name fk">student_id <span class="tag tag-fk">FK</span></span><span class="field-type">→ students.id</span></div>
+        <div class="field-row"><span class="field-name fk">group_id <span class="tag tag-fk">FK</span></span><span class="field-type">→ groups.id</span></div>
+        <div class="field-row"><span class="field-name">date</span><span class="field-type">date</span></div>
+        <div class="field-row"><span class="field-name">present</span><span class="field-type">boolean</span></div>
+        <div class="field-row"><span class="field-name fk">taken_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id</span></div>
+        <div class="section-label">Audit</div>
+        <div class="field-row"><span class="field-name audit fk">created_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">created_at</span><span class="field-type">timestamp</span></div>
+        <div class="field-row"><span class="field-name audit fk">updated_by <span class="tag tag-fk">FK</span></span><span class="field-type">→ users.id, nullable</span></div>
+        <div class="field-row"><span class="field-name audit">updated_at</span><span class="field-type">timestamp, nullable</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Relationships ── -->
+  <div class="rel-section">
+    <h2>Relationships</h2>
+    <table>
+      <thead>
+        <tr><th>From</th><th>Cardinality</th><th>To</th><th>Note</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="rel-from">users</span></td><td class="rel-type">1 → N</td><td><span class="rel-to">students</span></td><td>parent_id → users.id (role = parent)</td></tr>
+        <tr><td><span class="rel-from">users</span></td><td class="rel-type">1 → N</td><td><span class="rel-to">groups</span></td><td>teacher_id → users.id (role = teacher)</td></tr>
+        <tr><td><span class="rel-from">groups</span></td><td class="rel-type">1 → N</td><td><span class="rel-to">group_sessions</span></td><td>One group can have 1 or 2 weekly sessions</td></tr>
+        <tr><td><span class="rel-from">students</span></td><td class="rel-type">N → M</td><td><span class="rel-to">groups</span></td><td>Via enrollments pivot table</td></tr>
+        <tr><td><span class="rel-from">students + groups</span></td><td class="rel-type">Composite → N</td><td><span class="rel-to">subscriptions</span></td><td>Unique on (student_id, group_id, month) — auto-generated monthly</td></tr>
+        <tr><td><span class="rel-from">subscriptions</span></td><td class="rel-type">1 → N</td><td><span class="rel-to">payments</span></td><td>Status: pending | approved | rejected | refunded</td></tr>
+        <tr><td><span class="rel-from">users</span></td><td class="rel-type">1 → N</td><td><span class="rel-to">payments</span></td><td>created_by — audit trail (secretary / admin)</td></tr>
+        <tr><td><span class="rel-from">students + groups</span></td><td class="rel-type">Composite → N</td><td><span class="rel-to">attendance</span></td><td>One record per student + group + date</td></tr>
+        <tr><td><span class="rel-from">users</span></td><td class="rel-type">1 → N</td><td><span class="rel-to">attendance</span></td><td>taken_by — audit trail (teacher)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>
+  Quran Academy Management System &nbsp;·&nbsp; ERD &nbsp;·&nbsp;
+  <strong>Created by Mo &amp; Lido</strong>
+</footer>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#1e293b',
+      primaryTextColor: '#e2e8f0',
+      primaryBorderColor: '#475569',
+      lineColor: '#64748b',
+      secondaryColor: '#0f172a',
+      tertiaryColor: '#1e293b',
+      edgeLabelBackground: '#0f1117',
+      attributeBackgroundColorOdd: '#1a1f2e',
+      attributeBackgroundColorEven: '#141824',
+    },
+    er: {
+      diagramPadding: 30,
+      layoutDirection: 'TB',
+      minEntityWidth: 100,
+      minEntityHeight: 75,
+      entityPadding: 15,
+    }
+  });
+</script>
+
+</body>
+</html>

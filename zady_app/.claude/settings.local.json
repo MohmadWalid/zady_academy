@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(///wsl.localhost/Ubuntu/home/lido/zady_academy/zady_app/database/**)",
+      "Bash(dir \"\\\\\\\\\\\\\\\\wsl.localhost\\\\\\\\Ubuntu\\\\\\\\home\\\\\\\\lido\\\\\\\\zady_academy\\\\\\\\zady_app\\\\\\\\database\\\\\\\\migrations\\\\\\\\\")",
+      "PowerShell(wsl -- bash -c \"cd /home/lido/zady_academy/zady_app && php artisan migrate:fresh --force 2>&1\")"
+    ]
+  }
+}
