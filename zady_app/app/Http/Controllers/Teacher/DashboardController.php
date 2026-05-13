@@ -11,6 +11,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        #TODO: We should work from here next time 
+
+        
+        // Home page (حلقات اليوم) -   يبقى عنده امكانية تغيير التاريخ(حلقاتي)  - الاعدادات ( تسجل الخروج + الكود)
         $teacherId = auth()->id();
         $today = Carbon::today()->format('Y-m-d');
 

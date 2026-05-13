@@ -10,12 +10,14 @@ use Carbon\Carbon;
 
 class AttendanceController extends Controller
 {
-    public function __construct(private readonly AttendanceService $attendanceService) {}
+    public function __construct(private readonly AttendanceService $attendanceService)
+    {
+    }
 
     public function index(Request $request)
     {
         $date = $request->get('date', Carbon::today()->format('Y-m-d'));
-        
+
         $query = Group::where('teacher_id', auth()->id())
             ->with(['teacher', 'sessions'])
             ->withCount('activeEnrollments');
@@ -32,13 +34,13 @@ class AttendanceController extends Controller
     public function show(Request $request, string $id)
     {
         $group = Group::with(['teacher', 'activeEnrollments.student'])->findOrFail($id);
-        
+
         if ($group->teacher_id !== auth()->id()) {
             abort(403, 'غير مصرح لك بتحضير هذه الحلقة.');
         }
 
         $date = $request->get('date', Carbon::today()->format('Y-m-d'));
-        
+
         $existingAttendance = $this->attendanceService->getGroupAttendance($group->id, $date)
             ->pluck('present', 'student_id')
             ->toArray();
